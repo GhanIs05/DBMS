@@ -1,0 +1,41 @@
+CREATE OR REPLACE PACKAGE ProgrammerPackage AS
+    -- Function to calculate total salary
+    FUNCTION get_total_salary RETURN NUMBER;
+
+    -- Procedure to update salary by programmer name
+    PROCEDURE update_salary(p_programmer_name IN VARCHAR2, p_new_salary IN NUMBER);
+END ProgrammerPackage;
+/
+CREATE OR REPLACE PACKAGE BODY ProgrammerPackage AS
+    -- Function to calculate total salary
+    FUNCTION get_total_salary RETURN NUMBER IS
+        total_salary NUMBER := 0;
+    BEGIN
+        SELECT SUM(salary) INTO total_salary FROM Programmer;
+        RETURN total_salary;
+    END get_total_salary;
+
+    -- Procedure to update salary by programmer name
+    PROCEDURE update_salary(p_programmer_name IN VARCHAR2, p_new_salary IN NUMBER) IS
+    BEGIN
+        UPDATE Programmer
+        SET salary = p_new_salary
+        WHERE programmer_name = p_programmer_name;
+    END update_salary;
+END ProgrammerPackage;
+/
+-- Test the function to get total salary
+DECLARE
+    total_salary NUMBER;
+BEGIN
+    total_salary := ProgrammerPackage.get_total_salary;
+    DBMS_OUTPUT.PUT_LINE('Total Salary in Programmer Table: ' || total_salary);
+END;
+/
+
+-- Test the procedure to update salary
+BEGIN
+    ProgrammerPackage.update_salary('John Doe', 60000); -- Assuming 'John Doe' exists in Programmer table
+    DBMS_OUTPUT.PUT_LINE('Salary updated successfully.');
+END;
+/
