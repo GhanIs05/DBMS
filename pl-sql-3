@@ -1,0 +1,47 @@
+SET SERVEROUTPUT ON;
+
+DECLARE
+    v_date DATE := TO_DATE('2024-06-15', 'YYYY-MM-DD');  -- Replace with your date input
+    v_day VARCHAR2(10);
+BEGIN
+    -- Get the day name for the given date
+    v_day := TO_CHAR(v_date, 'Day');
+
+    -- Check if the day is Saturday or Sunday
+    IF v_day = 'Saturday' OR v_day = 'Sunday' THEN
+        DBMS_OUTPUT.PUT_LINE('The date ' || TO_CHAR(v_date, 'YYYY-MM-DD') || ' falls on a weekend.');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('The date ' || TO_CHAR(v_date, 'YYYY-MM-DD') || ' does not fall on a weekend.');
+    END IF;
+END;
+/
+
+SET SERVEROUTPUT ON;
+
+DECLARE
+    v_num NUMBER;
+    v_is_prime BOOLEAN;
+BEGIN
+    -- Loop through numbers from 1 to 50
+    FOR v_num IN 1..50 LOOP
+        v_is_prime := TRUE; -- Assume the number is prime initially
+        
+        -- Check if v_num is a prime number
+        IF v_num <= 1 THEN
+            v_is_prime := FALSE; -- Numbers <= 1 are not prime
+        ELSE
+            FOR i IN 2..ROUND(SQRT(v_num)) LOOP
+                IF MOD(v_num, i) = 0 THEN
+                    v_is_prime := FALSE; -- Found a divisor other than 1 and itself
+                    EXIT; -- Exit the loop early if not prime
+                END IF;
+            END LOOP;
+        END IF;
+        
+        -- Print the prime number
+        IF v_is_prime THEN
+            DBMS_OUTPUT.PUT_LINE(v_num || ' is a prime number');
+        END IF;
+    END LOOP;
+END;
+/
