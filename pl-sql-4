@@ -1,0 +1,75 @@
+SET SERVEROUTPUT ON;
+
+DECLARE
+    total_salary DECIMAL(10, 2) := 0;
+    cursor c_programmers is
+        SELECT salary
+        FROM Programmer;
+BEGIN
+    -- Open the cursor
+    OPEN c_programmers;
+
+    -- Loop through each record in the cursor
+    LOOP
+        -- Fetch salary from the cursor into a variable
+        FETCH c_programmers INTO total_salary;
+        
+        -- Exit loop if no more records
+        EXIT WHEN c_programmers%NOTFOUND;
+
+        -- Accumulate total salary
+        total_salary := total_salary + salary;
+    END LOOP;
+
+    -- Close the cursor
+    CLOSE c_programmers;
+
+    -- Display the total salary
+    DBMS_OUTPUT.PUT_LINE('Total Salary in Programmer Table: ' || total_salary);
+END;
+/
+
+DECLARE
+    total_salary DECIMAL(10, 2);
+BEGIN
+    -- Initialize total_salary to 0
+    total_salary := 0;
+
+    -- Query to calculate total salary
+    SELECT SUM(salary)
+    INTO total_salary
+    FROM Programmer;
+
+    -- Display the total salary
+    DBMS_OUTPUT.PUT_LINE('Total Salary in Programmer Table: ' || total_salary);
+
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('No data found in Programmer table.');
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('An error occurred: ' || SQLERRM);
+END;
+/
+
+-- Define the composite datatype
+CREATE OR REPLACE TYPE programmer_record AS OBJECT (
+    programmer_name VARCHAR2(100),
+    salary DECIMAL(10, 2)
+);
+/
+
+-- PL/SQL Block to use the composite datatype
+DECLARE
+    -- Declare a variable of the composite type
+    prog_rec programmer_record;
+BEGIN
+    -- Cursor to fetch data
+    FOR prog_rec IN (
+        SELECT programmer_name, salary
+        FROM Programmer
+    ) LOOP
+        -- Display programmer name and salary
+        DBMS_OUTPUT.PUT_LINE('Programmer: ' || prog_rec.programmer_name || ', Salary: ' || prog_rec.salary);
+    END LOOP;
+END;
+/
