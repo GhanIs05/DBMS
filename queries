@@ -1,0 +1,51 @@
+1. Write a query to create a table:
+CREATE TABLE ExampleTable (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    age INTEGER,
+    salary REAL
+);
+2. Write a query to change the type of a column:
+-- Change the type of 'age' column in ExampleTable from INTEGER to TEXT
+ALTER TABLE ExampleTable
+ALTER COLUMN age TEXT;
+3. Write a query to add a column to the existing table:
+ALTER TABLE ExampleTable
+ADD COLUMN department TEXT;
+4. Write a query to remove a column from the table:
+ALTER TABLE ExampleTable
+DROP COLUMN salary;
+5. Write a query to modify the salary of a programmer from 10000 to 20000:
+Assuming we have a Programmer table:
+UPDATE Programmer
+SET salary = 20000
+WHERE programmer_name = 'ProgrammerName';
+6. Write a query to modify the date of birth of a programmer that was wrongly entered:
+Assuming we have a Programmer table and need to correct the date of birth for a programmer:
+UPDATE Programmer
+SET date_of_birth = 'CorrectDateOfBirth'
+WHERE programmer_name = 'ProgrammerName';
+7. Write a query to delete a table that is no longer needed:
+DROP TABLE ExampleTable;
+8. Write a query to remove a tuple (row) from the table:
+Assuming we want to remove a programmer named "Ravi" from the Programmer table:
+DELETE FROM Programmer
+WHERE programmer_name = 'Ravi';
+9. Write a query to create and delete views:
+Creating a view:
+CREATE VIEW ExampleView AS
+SELECT column1, column2
+FROM SomeTable;
+Deleting a view:
+DROP VIEW ExampleView;
+10. Write a query for controlling data/transactions:
+Using transactions to ensure data integrity:
+BEGIN TRANSACTION;
+
+-- SQL statements (INSERT, UPDATE, DELETE)
+
+COMMIT; -- Commit changes
+
+ROLLBACK; -- Rollback changes if necessary
+11. Write a query to remove all tuples (rows) from a table:
+DELETE FROM ExampleTable;
