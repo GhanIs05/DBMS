@@ -1,3 +1,275 @@
+
+To create and populate the tables, we can use SQL. Here's the SQL script to create the tables and insert the records, followed by the queries to extract the required information.
+
+Step 1: Create the tables
+sql
+Copy code
+CREATE TABLE Programmer (
+    programmer_name VARCHAR(50) PRIMARY KEY,
+    date_of_birth DATE,
+    date_of_joining DATE,
+    gender VARCHAR(10),
+    profession1 VARCHAR(50),
+    profession2 VARCHAR(50),
+    salary DECIMAL(10, 2)
+);
+
+CREATE TABLE Studies (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    programmer_name VARCHAR(50),
+    study_place VARCHAR(50),
+    course_name VARCHAR(50),
+    course_cost DECIMAL(10, 2),
+    FOREIGN KEY (programmer_name) REFERENCES Programmer(programmer_name)
+);
+
+CREATE TABLE Software (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    programmer_name VARCHAR(50),
+    title_of_software VARCHAR(50),
+    platform_used VARCHAR(50),
+    selling_cost DECIMAL(10, 2),
+    development_cost DECIMAL(10, 2),
+    no_of_products_sold INT,
+    FOREIGN KEY (programmer_name) REFERENCES Programmer(programmer_name)
+);
+Step 2: Insert records into the tables
+sql
+Copy code
+INSERT INTO Programmer VALUES 
+('Alice', '1985-04-23', '2010-06-01', 'Female', 'Java', 'Python', 4000),
+('Bob', '1990-08-12', '2015-09-15', 'Male', 'C++', 'JavaScript', 3200),
+('Carol', '1982-11-05', '2008-02-20', 'Female', 'Ruby', 'Perl', 4500),
+('Dave', '1995-02-27', '2020-01-10', 'Male', 'C#', 'PHP', 2800),
+('Eve', '1988-07-19', '2013-03-22', 'Female', 'Python', 'Java', 3600);
+
+INSERT INTO Studies (programmer_name, study_place, course_name, course_cost) VALUES 
+('Alice', 'MIT', 'Computer Science', 50000),
+('Bob', 'Stanford', 'Software Engineering', 55000),
+('Carol', 'Harvard', 'Information Technology', 60000),
+('Dave', 'UC Berkeley', 'Computer Engineering', 45000),
+('Eve', 'MIT', 'Computer Science', 50000);
+
+INSERT INTO Software (programmer_name, title_of_software, platform_used, selling_cost, development_cost, no_of_products_sold) VALUES 
+('Alice', 'SuperApp', 'Java', 15000, 5000, 1200),
+('Bob', 'CoolGame', 'C++', 20000, 8000, 500),
+('Carol', 'DataAnalyzer', 'Ruby', 10000, 3000, 800),
+('Dave', 'WebPortal', 'C#', 18000, 7000, 300),
+('Eve', 'MLTool', 'Python', 25000, 10000, 600);
+Step 3: Queries to extract the required information
+Display the names and ages of programmers
+sql
+Copy code
+SELECT programmer_name, TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) AS age
+FROM Programmer;
+Which female programmer earning more than 3000 doesn’t know C++, Oracle, or dBase
+sql
+Copy code
+SELECT programmer_name
+FROM Programmer
+WHERE gender = 'Female' AND salary > 3000 AND profession1 NOT IN ('C++', 'Oracle', 'dBase') AND profession2 NOT IN ('C++', 'Oracle', 'dBase');
+Which institute has the most number of students
+sql
+Copy code
+SELECT study_place, COUNT(*) AS number_of_students
+FROM Studies
+GROUP BY study_place
+ORDER BY number_of_students DESC
+LIMIT 1;
+Display language wise count of profession1
+sql
+Copy code
+SELECT profession1, COUNT(*) AS count
+FROM Programmer
+GROUP BY profession1;
+Display the number of people born in each year
+sql
+Copy code
+SELECT YEAR(date_of_birth) AS birth_year, COUNT(*) AS count
+FROM Programmer
+GROUP BY birth_year;
+Display details of programmers who draw 2000-4000
+sql
+Copy code
+SELECT *
+FROM Programmer
+WHERE salary BETWEEN 2000 AND 4000;
+Display the programmers name and their software’s
+sql
+Copy code
+SELECT p.programmer_name, s.title_of_software
+FROM Programmer p
+JOIN Software s ON p.programmer_name = s.programmer_name;
+What is the highest number of copies sold by a package
+sql
+Copy code
+SELECT title_of_software, MAX(no_of_products_sold) AS highest_sold
+FROM Software;
+Display each institute name with number of students
+sql
+Copy code
+SELECT study_place, COUNT(*) AS number_of_students
+FROM Studies
+GROUP BY study_place;
+Display the number of people born in each month
+sql
+Copy code
+SELECT MONTH(date_of_birth) AS birth_month, COUNT(*) AS count
+FROM Programmer
+GROUP BY birth_month;
+What are the languages known by male programmers
+sql
+Copy code
+SELECT DISTINCT profession1
+FROM Programmer
+WHERE gender = 'Male'
+UNION
+SELECT DISTINCT profession2
+FROM Programmer
+WHERE gender = 'Male';
+Display lowest course fee
+sql
+Copy code
+SELECT MIN(course_cost) AS lowest_fee
+FROM Studies;
+Which course has been done by most of the students
+sql
+Copy code
+SELECT course_name, COUNT(*) AS count
+FROM Studies
+GROUP BY course_name
+ORDER BY count DESC
+LIMIT 1;
+Display each institute name with number of courses, average cost per course
+sql
+Copy code
+SELECT study_place, COUNT(DISTINCT course_name) AS number_of_courses, AVG(course_cost) AS average_cost
+FROM Studies
+GROUP BY study_place;
+Display the number of people studied in each institute
+sql
+Copy code
+SELECT study_place, COUNT(*) AS number_of_students
+FROM Studies
+GROUP BY study_place;
+Display the details of software developed by Ramesh (if there were any programmers named Ramesh)
+sql
+Copy code
+SELECT *
+FROM Software
+WHERE programmer_name = 'Ramesh';
+How many people draw 2000-4000
+sql
+Copy code
+SELECT COUNT(*)
+FROM Programmer
+WHERE salary BETWEEN 2000 AND 4000;
+Which is the costliest software developed in .NET
+sql
+Copy code
+SELECT title_of_software, MAX(selling_cost) AS max_cost
+FROM Software
+WHERE platform_used = '.NET';
+Display the sales cost of the software’s developed by each programmer
+sql
+Copy code
+SELECT programmer_name, SUM(selling_cost) AS total_sales_cost
+FROM Software
+GROUP BY programmer_name;
+Which language has been stated as profession1 by most of the programmers
+sql
+Copy code
+SELECT profession1, COUNT(*) AS count
+FROM Programmer
+GROUP BY profession1
+ORDER BY count DESC
+LIMIT 1;
+What is the price of the costliest software developed in BASIC
+sql
+Copy code
+SELECT MAX(selling_cost) AS max_cost
+FROM Software
+WHERE platform_used = 'BASIC';
+Display the details of programmers who don’t know Fortran, Cobol, or .NET
+sql
+Copy code
+SELECT *
+FROM Programmer
+WHERE profession1 NOT IN ('Fortran', 'Cobol', '.NET') AND profession2 NOT IN ('Fortran', 'Cobol', '.NET');
+Display the names of programmers whose names contain up to 5 characters
+sql
+Copy code
+SELECT programmer_name
+FROM Programmer
+WHERE LENGTH(programmer_name) <= 5;
+Display the number of software’s sold by each programmer
+sql
+Copy code
+SELECT programmer_name, SUM(no_of_products_sold) AS total_sold
+FROM Software
+GROUP BY programmer_name;
+How old is the oldest male programmer
+sql
+Copy code
+SELECT MAX(TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE())) AS oldest_age
+FROM Programmer
+WHERE gender = 'Male';
+Display the names of programmers who have done the DAP course (if there were any DAP course records)
+sql
+Copy code
+SELECT programmer_name
+FROM Studies
+WHERE course_name = 'DAP';
+How many female programmers knowing Cobol have more than 2 years experience
+sql
+Copy code
+SELECT COUNT(*)
+FROM Programmer
+WHERE gender = 'Female' AND (profession1 = 'Cobol' OR profession2 = 'Cobol') AND TIMESTAMPDIFF(YEAR, date_of_joining, CURDATE()) > 2;
+Display the number of software’s in each language except C and C++
+sql
+Copy code
+SELECT platform_used, COUNT(*) AS software_count
+FROM Software
+WHERE platform_used NOT IN ('C', 'C++')
+GROUP BY platform_used;
+How many programmers don’t know .NET and C
+sql
+Copy code
+SELECT COUNT(*)
+FROM Programmer
+WHERE profession1 NOT IN ('.NET', 'C') AND profession2 NOT IN ('.NET', 'C');
+Display the details of software’s whose sales have been crossed 2000 mark
+sql
+Copy code
+SELECT *
+FROM Software
+WHERE no_of_products_sold > 2000;
+Display the names of male and female programmers
+sql
+Copy code
+SELECT programmer_name, gender
+FROM Programmer;
+Display the name of the highest paid programmer for each language
+sql
+Copy code
+SELECT profession1, programmer_name, MAX(salary) AS max_salary
+FROM Programmer
+GROUP BY profession1
+ORDER BY max_salary DESC;
+Display the selling cost of software’s developed in each language
+sql
+Copy code
+SELECT platform_used, SUM(selling_cost) AS total_selling_cost
+FROM Software
+GROUP BY platform_used;
+Calculate the experience in years for each programmer and display along with their names in descending order
+sql
+Copy code
+SELECT programmer_name, TIMESTAMPDIFF(YEAR, date_of_joining, CURDATE()) AS experience_years
+FROM Programmer
+ORDER BY experience_years DESC;
+These SQL queries will provide the desired outputs based on the data provided and stored in the tables
 1. Write a query to create a table:
 CREATE TABLE ExampleTable (
     id INTEGER PRIMARY KEY,
